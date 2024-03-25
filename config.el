@@ -24,6 +24,10 @@
 ;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
 ;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
 ;;
+;; (setq doom-font (font-spec :family "Sarasa Mono SC Nerd" :size 16))
+
+
+;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
 ;; refresh your font settings. If Emacs still can't find your font, it likely
@@ -74,3 +78,103 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+;;
+
+(setq treemacs-width 60)
+
+
+;; 设置全局代理
+(setq url-proxy-services
+      '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
+        ("http" . "127.0.0.1:7890")
+        ("https" . "127.0.0.1:7890")))
+
+
+(use-package! lsp-bridge
+  :config
+  (setq lsp-bridge-enable-log nil)
+  (global-lsp-bridge-mode)
+  (setq copilot-mode 1)
+  ;; (add-hook 'org-mode-hook #'lsp-bridge-toggle-sdcv-helper)
+  )
+
+
+;; accept completion from copilot and fallback to company
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :init
+  (setq copilot-indent-offset-warning-disable t)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+                ("C-<tab>" . 'copilot-accept-completion-by-word)))
+
+;; ;; 防止 tab 键被 copilot 拦截
+;; (after! (evil copilot)
+;;   ;; Define the custom function that either accepts the completion or does the default behavior
+;;   (defun my/copilot-tab-or-default ()
+;;     (interactive)
+;;     (if (and (bound-and-true-p copilot-mode)
+;;             (copilot-has-suggestion-on-screen) ; HERE !!
+;;              ;; Add any other conditions to check for active copilot suggestions if necessary
+;;              )
+;;         (copilot-accept-completion)
+;;       (evil-insert 1))) ; Default action to insert a tab. Adjust as needed.
+
+;;   ;; Bind the custom function to <tab> in Evil's insert state
+;;   (evil-define-key 'insert 'global (kbd "<tab>") 'my/copilot-tab-or-default))
+
+
+;; eaf
+(use-package! eaf
+  :load-path "~/.emacs.d/.local/straight/repos/emacs-application-framework"
+  :custom
+                                        ; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
+  (eaf-browser-continue-where-left-off t)
+  (eaf-browser-enable-adblocker t)
+  (browse-url-browser-function 'eaf-open-browser)
+  :init
+  (setq eaf-proxy-type "http")
+  (setq eaf-proxy-host "127.0.0.1")
+  (setq eaf-proxy-port "7890")
+  :config
+  (defalias 'browse-web #'eaf-open-browser)
+   ;; 下列按键会出错, 不知道为什么, 先注释掉
+   ;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+   ;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+   ;; (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+   ;; (eaf-bind-key nil "M-q" eaf-browser-keybinding)
+  )
+
+(require 'eaf-browser)
+(require 'eaf-pdf-viewer)
+
+
+(require 'eaf-evil)
+
+(define-key key-translation-map (kbd "SPC")
+    (lambda (prompt)
+      (if (derived-mode-p 'eaf-mode)
+          (pcase eaf--buffer-app-name
+            ("browser" (if  eaf-buffer-input-focus
+                           (kbd "SPC")
+                         (kbd eaf-evil-leader-key)))
+            ("pdf-viewer" (kbd eaf-evil-leader-key))
+            ("image-viewer" (kbd eaf-evil-leader-key))
+            (_  (kbd "SPC")))
+        (kbd "SPC"))))
+
+
+(setq system-time-locale "C")
+
+;; ripgrep 编码问题
+;; (add-to-list 'process-coding-system-alist
+;;              '("[rR][gG]" . (utf-8-dos . windows-1251-dos)))
+;;
+;;
+
+;; org-agenda
+(after! org
+  (setq org-agenda-files '("~/org/agenda.org")))
+
