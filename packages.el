@@ -70,3 +70,29 @@
 (package! eaf
   :recipe (:host github
            :repo "emacs-eaf/emacs-application-framework"))
+
+(package! sis)
+
+(package! insert-translated-name
+  :recipe (:local-repo "site-lisp/insert-translated-name"
+           :files ("insert-translated-name.el")))
+
+
+;; ;; 自动在中英文之间增加空格
+;; (package! wraplish
+;;   :recipe (:local-repo "site-lisp/wraplish"
+;;            :files ("*.el")))
+
+
+
+(package! popweb
+  :recipe (:local-repo "site-lisp/popweb"
+           :files ("*.el" "extension/*.el" "extension/*/*.el")))
+
+
+(package! ox-hugo)
+
+(package! org-transclusion)
+
+(package! valign
+  :recipe (:host github :repo "casouri/valign"))

@@ -21,13 +21,12 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
+;; (setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
 ;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
 ;;
 ;; (setq doom-font (font-spec :family "Sarasa Mono SC Nerd" :size 16))
 
 
-;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
 ;; refresh your font settings. If Emacs still can't find your font, it likely
@@ -80,6 +79,7 @@
 ;; they are implemented.
 ;;
 
+;; modify the width of treemacs window
 (setq treemacs-width 60)
 
 
@@ -94,7 +94,6 @@
   :config
   (setq lsp-bridge-enable-log nil)
   (global-lsp-bridge-mode)
-  (setq copilot-mode 1)
   ;; (add-hook 'org-mode-hook #'lsp-bridge-toggle-sdcv-helper)
   )
 
@@ -108,7 +107,10 @@
               ("<tab>" . 'copilot-accept-completion)
               ("TAB" . 'copilot-accept-completion)
               ("C-TAB" . 'copilot-accept-completion-by-word)
-                ("C-<tab>" . 'copilot-accept-completion-by-word)))
+              ("C-<tab>" . 'copilot-accept-completion-by-word))
+  :config
+  (setq global-copilot-mode t)
+  )
 
 ;; ;; 防止 tab 键被 copilot 拦截
 ;; (after! (evil copilot)
@@ -178,3 +180,92 @@
 (after! org
   (setq org-agenda-files '("~/org/agenda.org")))
 
+
+
+
+;; sis
+(use-package! sis
+  :config
+  ;; 配置输入法切换
+  ;; 对于 Windows, 使用 'im-select
+  (cond
+   ((eq system-type 'windows-nt)  ; 对于 Windows 系统
+    (sis-ism-lazyman-config
+     "1033"  ; 英文输入法的 id
+     "2052"  ; 中文输入法的 id
+     'im-select)))
+  (setq sis-default-cursor-color "green yellow" ; 英文光标色
+        sis-other-cursor-color "#FF2121"        ; 中文光标色
+        ;; sis-inline-tighten-head-rule 'all ; 删除头部空格，默认1，删除一个空格，1/0/'all
+        sis-inline-tighten-tail-rule 'all ; 删除尾部空格，默认1，删除一个空格，1/0/'all
+        ;; sis-inline-with-english t         ; 默认是t, 中文context下输入<spc>进入内联英文
+        ;; sis-inline-with-other t
+        )
+  ;; (sis-ism-lazyman-config nil "2052" 'im-select)
+  ;; 启用 sis 的各种模式
+  (sis-global-cursor-color-mode t)   ; 根据输入法状态改变光标颜色
+  (sis-global-respect-mode t)        ; 在特定场景下保持英文状态
+  (sis-global-context-mode t)        ; 根据上下文自动切换输入法
+  (sis-global-inline-mode t)         ; 内联英文模式，输入英文时无需切换输入法
+
+  ;; 配置 Evil 模式下的输入法自动切换
+  ;; 在 Normal 模式下自动切换到英文输入法，其他模式下恢复原输入法
+  ;; (add-hook 'evil-normal-state-entry-hook #'sis-set-english)
+  ;; (add-hook 'evil-insert-state-entry-hook #'sis-set-prev)
+  ;; (add-hook 'evil-visual-state-entry-hook #'sis-set-prev)
+  ;; (add-hook 'evil-replace-state-entry-hook #'sis-set-prev)
+  )
+
+
+
+
+(use-package! insert-translated-name
+  :load-path "~/.doom.d/site-lisp/"
+  :config
+  (setq insert-translated-name-program "ollama")
+  )
+
+
+;; ;; wraplish 自动在中英文交替之间的地方加入空格.
+;; (use-package! wraplish
+;;   :load-path "~/.doom./site-lisp/wraplish"
+;;   :hook (markdown-mode . wraplish-mode)
+;;         (org-mode . wraplish-mode))
+
+;; 翻译弹窗软件
+(use-package! popweb
+  :load-path ("~/.doom.d/site-lisp/popweb"
+              ;; "~/.doom.d/site-lisp/popweb/extension/org-roam"
+              "~/.doom.d/site-lisp/popweb/extension/latex"
+              "~/.doom.d/site-lisp/popweb/extension/dict"
+              "~/.doom.d/site-lisp/popweb/extension/anki-review")
+  :config
+  ;; org-roam-link 就不要了, 因为它依赖 ivy, 它的 minibuffer 的目录补全不好用.
+  ;; (require 'popweb-org-roam-link)
+  (require 'popweb-latex)
+  (require 'popweb-dict)
+  (require 'popweb-anki-review)
+  (add-hook 'latex-mode-hook #'popweb-latex-mode)
+
+  ;; (setq popweb-proxy-type "http")
+  ;; (setq popweb-proxy-host "127.0.0.1")
+  ;; (setq popweb-proxy-port "7890")
+  (setq popweb-url-web-window-width-scale 0.9)
+  )
+
+(use-package! ox-hugo
+  :after ox)
+
+
+;; 取消 C-g 自动进入 normal-mode, 因为无法取消代码补全提示弹窗. C-[ 已经可以进入 normal-mode 了.
+(after! evil
+  (define-key evil-insert-state-map (kbd "C-g") #'keyboard-quit))
+
+;; emacs gui org-mode 表格中英文混杂时对齐
+(use-package! valign
+  :hook (org-mode . valign-mode)
+  )
+
+
+
+(setq doom-font (font-spec :family "Maple Mono NF" :size 16))
