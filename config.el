@@ -152,7 +152,7 @@
 (require 'eaf-browser)
 (require 'eaf-pdf-viewer)
 
-
+;; eaf-evil should be the last
 (require 'eaf-evil)
 
 (define-key key-translation-map (kbd "SPC")
@@ -189,17 +189,28 @@
   ;; 配置输入法切换
   ;; 对于 Windows, 使用 'im-select
   (cond
-   ((eq system-type 'windows-nt)  ; 对于 Windows 系统
+   ((eq system-type 'windows-nt)  ; For Windows systems
     (sis-ism-lazyman-config
-     "1033"  ; 英文输入法的 id
-     "2052"  ; 中文输入法的 id
-     'im-select)))
+     "1033"  ; English input method id
+     "2052"  ; Chinese input method id
+     'im-select))
+
+   ((eq system-type 'gnu/linux)   ; For Linux systems (including Ubuntu)
+    (sis-ism-lazyman-config
+     "1"
+     "2"
+     'fcitx5)))
+    ;; (sis-ism-lazyman-config
+    ;;  "1"
+    ;;  "2"
+    ;;  'fcitx5)
+
   (setq sis-default-cursor-color "green yellow" ; 英文光标色
         sis-other-cursor-color "#FF2121"        ; 中文光标色
         ;; sis-inline-tighten-head-rule 'all ; 删除头部空格，默认1，删除一个空格，1/0/'all
         sis-inline-tighten-tail-rule 'all ; 删除尾部空格，默认1，删除一个空格，1/0/'all
-        ;; sis-inline-with-english t         ; 默认是t, 中文context下输入<spc>进入内联英文
-        ;; sis-inline-with-other t
+        sis-inline-with-english t         ; 默认是t, 中文context下输入<spc>进入内联英文
+        ;; sis-inline-with-other
         )
   ;; (sis-ism-lazyman-config nil "2052" 'im-select)
   ;; 启用 sis 的各种模式
@@ -218,12 +229,12 @@
 
 
 
-
 (use-package! insert-translated-name
   :load-path "~/.doom.d/site-lisp/"
   :config
   (setq insert-translated-name-program "ollama")
   )
+
 
 
 ;; ;; wraplish 自动在中英文交替之间的地方加入空格.
@@ -263,9 +274,23 @@
 
 ;; emacs gui org-mode 表格中英文混杂时对齐
 (use-package! valign
-  :hook (org-mode . valign-mode)
-  )
-
+  :hook
+  (org-mode . valign-mode)
+  :config
+  (setq valign-fancy-bar t))
 
 
 (setq doom-font (font-spec :family "Maple Mono NF" :size 16))
+
+;; (use-package! exec-path-from-shell
+;;   :config
+;;   (when (memq window-system '(mac ns x))
+;;     (exec-path-from-shell-initialize)
+;;     (exec-path-from-shell-copy-env "NVM_DIR")))
+;;
+;;
+
+;; manually set fcitx enrironment prevent fcitx from not working in emacs
+(setenv "GTK_IM_MODULE" "fcitx")
+(setenv "QT_IM_MODULE" "fcitx")
+(setenv "XMODIFIERS" "@im=fcitx")

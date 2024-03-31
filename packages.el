@@ -96,3 +96,7 @@
 
 (package! valign
   :recipe (:host github :repo "casouri/valign"))
+
+;; keep the environment variables of emacs the same as system's
+;; (package! exec-path-from-shell
+;;   :recipe (:host github :repo purcell/exec-path-from-shell))

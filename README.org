@@ -1,0 +1,23 @@
+#+title: Readme
+
+
+
+* nvm configuration
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+* external pacakges
+** [[https://github.com/purcell/exec-path-from-shell][exec-path-from-shell]]: A GNU Emacs library to ensure environment variables inside Emacs look the same as in the user's shell.
+
+* Font
+[[https://github.com/subframe7536/maple-font][Maple Font]]
+
+* (Optional) install fcitx5
+#+begin_src shell
+# add fcitx5 ppa
+sudo add-apt-repository ppa:fcitx-team/fcitx5
+# update package source
+sudo apt update
+# install fcitx5 and GUI tool
+
+#+end_src
