@@ -79,9 +79,19 @@
 ;; they are implemented.
 ;;
 
+
+
+;; ;; make exec-path-from-shell from all elisp file execute only once.
+;; ;; should be place at the first line of a custom emacs configuration.
+;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp/cache-path-from-shell/"))
+;; (require 'cache-path-from-shell)
+
+
+(setq-default  tab-width 4) ;; 表示一个 tab 4个字符宽
+(setq-default indent-tabs-mode nil) ;; nil 表示将 tab 替换成空格
+
 ;; modify the width of treemacs window
 (setq treemacs-width 60)
-
 
 ;; 设置全局代理
 (setq url-proxy-services
@@ -135,7 +145,8 @@
                                         ; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
   (eaf-browser-continue-where-left-off t)
   (eaf-browser-enable-adblocker t)
-  (browse-url-browser-function 'eaf-open-browser)
+  ;; have links opened within emacs using eaf-browser rather than the default browser
+  ;; (browse-url-browser-function 'eaf-open-browser)
   :init
   (setq eaf-proxy-type "http")
   (setq eaf-proxy-host "127.0.0.1")
@@ -282,15 +293,57 @@
 
 (setq doom-font (font-spec :family "Maple Mono NF" :size 16))
 
-;; (use-package! exec-path-from-shell
-;;   :config
-;;   (when (memq window-system '(mac ns x))
-;;     (exec-path-from-shell-initialize)
-;;     (exec-path-from-shell-copy-env "NVM_DIR")))
-;;
-;;
+(use-package! exec-path-from-shell
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)
+    (exec-path-from-shell-copy-env "NVM_DIR")))
+
 
 ;; manually set fcitx enrironment prevent fcitx from not working in emacs
-(setenv "GTK_IM_MODULE" "fcitx")
-(setenv "QT_IM_MODULE" "fcitx")
-(setenv "XMODIFIERS" "@im=fcitx")
+;; (setenv "GTK_IM_MODULE" "fcitx")
+;; (setenv "QT_IM_MODULE" "fcitx")
+;; (setenv "XMODIFIERS" "@im=fcitx")
+
+
+(use-package! org-download
+    :demand t
+    :after org
+    :config
+    (add-hook 'dired-mode-hook 'org-download-enable)
+    ;; (setq org-download-screenshot-method "powershell -c Add-Type -AssemblyName System.Windows.Forms;$image = [Windows.Forms.Clipboard]::GetImage();$image.Save('%s', [System.Drawing.Imaging.ImageFormat]::Png)")
+    ;; (defun org-download-annotate-default (link)
+    ;;   "Annotate LINK with the time of download."
+    ;;   (make-string 0 ?\s))
+
+    ;; (setq-default org-download-heading-lvl nil
+    ;;               org-download-image-dir "./img"
+    ;;               ;; org-download-screenshot-method "screencapture -i %s"
+    ;;               org-download-screenshot-file (expand-file-name "screenshot.jpg" temporary-file-directory))
+)
+
+;; 终端模拟 vterm
+;; 使用 M-x vterm 新建一个 terminal
+;; 在 terminal 中使用 C-c C-t 进入「选择」模式（类似 Tmux 里的 C-b [ ）
+(use-package! vterm
+  ;; https://github.com/akermu/emacs-libvterm
+  ;; 请务必参照项目 README 作配置，以下不是我的完整配置。
+  ;; 比如，如果你要和 shell 双向互动（对，它可以双向互动），
+  ;; 那么 shell 需要做一点配置以解析 vterm 传递过来的信号
+  :config
+  (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+  (setq vterm-kill-buffer-on-exit t)) ;; shell 退出时 kill 掉这个 buffer
+
+(use-package! multiple-cursors
+  :init
+  :bind (("C-S-c" . mc/edit-lines) ;; 每行一个光标
+         ("C->" . mc/mark-next-like-this-symbol) ;; 全选光标所在单词并在下一个单词增加一个光标。通常用来启动一个流程
+         ("C-M->" . mc/skip-to-next-like-this) ;; 跳过当前单词并跳到下一个单词，和上面在同一个流程里。
+         ("C-<" . mc/mark-previous-like-this-symbol) ;; 同样是开启一个多光标流程，但是是「向上找」而不是向下找。
+         ("C-M-<" . mc/skip-to-previous-like-this) ;; 跳过当前单词并跳到上一个单词，和上面在同一个流程里。
+         ("C-c C->" . mc/mark-all-symbols-like-this))) ;; 直接多选本 buffer 所有这个单词
+
+
+abc this is what I want
+abc this is what I want
+abc this is what I want
