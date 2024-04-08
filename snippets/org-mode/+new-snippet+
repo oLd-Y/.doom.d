@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: Not Auto Export On Save
+# key: <nae
+# --
+* Footnotes
+* COMMENT Local Variables                          :ARCHIVE:
+# Local Variables:
+# eval: (org-hugo-auto-export-mode -1)
+# End:
