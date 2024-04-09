@@ -87,13 +87,14 @@
 ;; (require 'cache-path-from-shell)
 
 (add-to-list 'load-path "~/")
+(add-to-list 'load-path "~/.doom.d/")
 
 
 (setq-default tab-width 4) ;; 表示一个 tab 4个字符宽
 (setq-default indent-tabs-mode nil) ;; nil 表示将 tab 替换成空格
 
 ;; modify the width of treemacs window
-(setq treemacs-width 60)
+(setq treemacs-width 40)
 
 ;; 设置全局代理
 (setq url-proxy-services
@@ -140,40 +141,41 @@
 ;;   (evil-define-key 'insert 'global (kbd "<tab>") 'my/copilot-tab-or-default))
 
 
-;; eaf
-(use-package! eaf
-  :load-path "~/.emacs.d/.local/straight/repos/emacs-application-framework"
-  :custom
-                                        ; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
-  (eaf-browser-continue-where-left-off t)
-  (eaf-browser-enable-adblocker t)
-  ;; have links opened within emacs using eaf-browser rather than the default browser
-  ;; (browse-url-browser-function 'eaf-open-browser)
-  :init
-  (setq eaf-proxy-type "http")
-  (setq eaf-proxy-host "127.0.0.1")
-  (setq eaf-proxy-port "7890")
-  :config
-  (defalias 'browse-web #'eaf-open-browser)
-  )
+;; ;; eaf
+;; (use-package! eaf
+;;   :load-path "~/.emacs.d/.local/straight/repos/emacs-application-framework"
+;;   :custom
+;;                                         ; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
+;;   (eaf-browser-continue-where-left-off t)
+;;   (eaf-browser-enable-adblocker t)
+;;   ;; have links opened within emacs using eaf-browser rather than the default browser
+;;   ;; (browse-url-browser-function 'eaf-open-browser)
+;;   :init
+;;   (setq eaf-proxy-type "http")
+;;   (setq eaf-proxy-host "127.0.0.1")
+;;   (setq eaf-proxy-port "7890")
+;;   :config
+;;   (defalias 'browse-web #'eaf-open-browser)
+;;   )
 
-(require 'eaf-browser)
-(require 'eaf-pdf-viewer)
+;; (require 'eaf-browser)
+;; (require 'eaf-pdf-viewer)
+;; ;; (require 'eaf-pyqterminal)
 
-;; eaf-evil should be the last
-(require 'eaf-evil)
+;; ;; eaf-evil should be the last
+;; (require 'eaf-evil)
 
-(define-key key-translation-map (kbd "SPC")
-    (lambda (prompt)
-      (if (derived-mode-p 'eaf-mode)
-          (pcase eaf--buffer-app-name
-            ("browser" (if  eaf-buffer-input-focus
-                           (kbd "SPC")
-                         (kbd eaf-evil-leader-key)))
-            ("pdf-viewer" (kbd eaf-evil-leader-key))
-            ("image-viewer" (kbd eaf-evil-leader-key))
-            (_  (kbd "SPC")))
-        (kbd "SPC"))))
+;; (define-key key-translation-map (kbd "SPC")
+;;     (lambda (prompt)
+;;       (if (derived-mode-p 'eaf-mode)
+;;           (pcase eaf--buffer-app-name
+;;             ("browser" (if  eaf-buffer-input-focus
+;;                            (kbd "SPC")
+;;                          (kbd eaf-evil-leader-key)))
+;;             ("pdf-viewer" (kbd eaf-evil-leader-key))
+;;             ("image-viewer" (kbd eaf-evil-leader-key))
+;;             (_  (kbd "SPC")))
+;;         (kbd "SPC"))))
 
 
 (setq system-time-locale "C")
@@ -188,7 +190,6 @@
 (after! org
   (setq org-agenda-files '("~/org/agenda.org")))
 
-(add-to-list 'load-path "~/.doom.d/")
 
 (require 'init-org)
 
@@ -263,7 +264,7 @@
   )
 
 (require 'init-org)
-;;(require 'init-evil)
+;; (require 'init-evil)
 
 ;; emacs gui org-mode 表格中英文混杂时对齐
 (use-package! valign
@@ -316,10 +317,10 @@
 
 
 
-(use-package! gptel
+(use-package gptel
   :ensure t
   :config
-  (setq! gptel-api-key (getenv "GPTEL_API_KEY"))
+  (setq gptel-api-key (getenv "GPTEL_API_KEY"))
   (setq gptel-model "moonshot-v1-8k")
   (setq gptel-default-mode 'org-mode)
   (setq gptel-backend
@@ -346,51 +347,9 @@
 (after! evil
   (define-key evil-insert-state-map (kbd "C-g") #'keyboard-quit))
 
-(use-package evil-mc
-  :diminish
-  :hook (after-init . global-evil-mc-mode)
-  :init
-  (defvar evil-mc-key-map (make-sparse-keymap))
-  :config
-  (defhydra hydra-evil-mc (:color blue :hint nil)
-    "
- _C-a_  all match          _m_ here                _u_ undo
- _n_    next match         _J_ mark & move next    _s_ suspend
- _p_    prev match         _K_ mark & move prev    _r_ resume
- _N_    skip & next match  _H_ first cursor        _q_ quit
- _P_    skip & prev match  _L_ last cursor         _O_ quit
-    "
-    ("m" evil-mc-make-cursor-here :exit nil)
-    ("C-a" evil-mc-make-all-cursors :exit nil)
-    ("n" evil-mc-make-and-goto-next-match :exit nil)
-    ("p" evil-mc-make-and-goto-prev-match :exit nil)
-    ("N" evil-mc-skip-and-goto-next-match :exit nil)
-    ("P" evil-mc-skip-and-goto-prev-match :exit nil)
+(require 'init-evil)
 
-    ("j" evil-next-line :exit nil)
-    ("k" evil-previous-line :exit nil)
-    ("J" evil-mc-make-cursor-move-next-line :exit nil)
-    ("K" evil-mc-make-cursor-move-prev-line :exit nil)
+(require 'init-treesit)
 
-    ("H" evil-mc-make-and-goto-first-cursor :exit nil)
-    ("L" evil-mc-make-and-goto-last-cursor :exit nil)
-    ("u" evil-mc-undo-last-added-cursor :exit nil)
-    ("r" evil-mc-resume-cursors)
-    ("s" evil-mc-pause-cursors)
-    ("O" evil-mc-undo-all-cursors)
-    ("q" evil-mc-undo-all-cursors))
-
-  ;; (evil-define-key* '(normal visual) 'global
-  ;;   (kbd "SPC-j") 'hydra-evil-mc/body)
-
-  ;; (evil-define-key* 'visual evil-mc-key-map
-  ;;   "A" 'evil-mc-make-cursor-in-visual-selection-end
-  ;;   "I" 'evil-mc-make-cursor-in-visual-selection-beg))
-
-  (map! :leader
-      :desc "Evil-mc Hydra"
-      "j" #'hydra-evil-mc/body)
-
-  (map! :map evil-mc-key-map
-      :v "A" #'evil-mc-make-cursor-in-visual-selection-end
-      :v "I" #'evil-mc-make-cursor-in-visual-selection-beg))
+;; (require 'init-js)
+(require 'init-window)

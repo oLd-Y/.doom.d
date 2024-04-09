@@ -111,3 +111,8 @@
 (package! gptel)
 
 (package! leetcode)
+
+(package! vue-ts-mode
+    :recipe (:host github :repo "8uff3r/vue-ts-mode"))
+
+(package! treesit-auto)
