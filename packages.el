@@ -102,6 +102,12 @@
   :recipe (:host github :repo "purcell/exec-path-from-shell"))
 
 
-(package! org-download)
+;; (package! org-download)
 
 (package! multiple-cursors)
+
+(package! ob-mermaid)
+
+(package! gptel)
+
+(package! leetcode)

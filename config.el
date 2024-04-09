@@ -87,7 +87,7 @@
 ;; (require 'cache-path-from-shell)
 
 
-(setq-default  tab-width 4) ;; 表示一个 tab 4个字符宽
+(setq-default tab-width 4) ;; 表示一个 tab 4个字符宽
 (setq-default indent-tabs-mode nil) ;; nil 表示将 tab 替换成空格
 
 ;; modify the width of treemacs window
@@ -153,11 +153,6 @@
   (setq eaf-proxy-port "7890")
   :config
   (defalias 'browse-web #'eaf-open-browser)
-   ;; 下列按键会出错, 不知道为什么, 先注释掉
-   ;; (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-   ;; (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-   ;; (eaf-bind-key take_photo "p" eaf-camera-keybinding)
-   ;; (eaf-bind-key nil "M-q" eaf-browser-keybinding)
   )
 
 (require 'eaf-browser)
@@ -191,8 +186,9 @@
 (after! org
   (setq org-agenda-files '("~/org/agenda.org")))
 
+(add-to-list 'load-path "~/.doom.d/")
 
-
+(require 'init-org)
 
 ;; sis
 (use-package! sis
@@ -211,10 +207,6 @@
      "1"
      "2"
      'fcitx5)))
-    ;; (sis-ism-lazyman-config
-    ;;  "1"
-    ;;  "2"
-    ;;  'fcitx5)
 
   (setq sis-default-cursor-color "green yellow" ; 英文光标色
         sis-other-cursor-color "#FF2121"        ; 中文光标色
@@ -229,13 +221,6 @@
   (sis-global-respect-mode t)        ; 在特定场景下保持英文状态
   (sis-global-context-mode t)        ; 根据上下文自动切换输入法
   (sis-global-inline-mode t)         ; 内联英文模式，输入英文时无需切换输入法
-
-  ;; 配置 Evil 模式下的输入法自动切换
-  ;; 在 Normal 模式下自动切换到英文输入法，其他模式下恢复原输入法
-  ;; (add-hook 'evil-normal-state-entry-hook #'sis-set-english)
-  ;; (add-hook 'evil-insert-state-entry-hook #'sis-set-prev)
-  ;; (add-hook 'evil-visual-state-entry-hook #'sis-set-prev)
-  ;; (add-hook 'evil-replace-state-entry-hook #'sis-set-prev)
   )
 
 
@@ -275,13 +260,8 @@
   (setq popweb-url-web-window-width-scale 0.9)
   )
 
-(use-package! ox-hugo
-  :after ox)
-
-
-;; 取消 C-g 自动进入 normal-mode, 因为无法取消代码补全提示弹窗. C-[ 已经可以进入 normal-mode 了.
-(after! evil
-  (define-key evil-insert-state-map (kbd "C-g") #'keyboard-quit))
+(require 'init-org)
+(require 'init-evil)
 
 ;; emacs gui org-mode 表格中英文混杂时对齐
 (use-package! valign
@@ -297,30 +277,19 @@
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)
-    (exec-path-from-shell-copy-env "NVM_DIR")))
-
-
-;; manually set fcitx enrironment prevent fcitx from not working in emacs
-;; (setenv "GTK_IM_MODULE" "fcitx")
-;; (setenv "QT_IM_MODULE" "fcitx")
-;; (setenv "XMODIFIERS" "@im=fcitx")
-
+    ;; (exec-path-from-shell-copy-env "NVM_DIR")
+    ;; (exec-path-from-shell-copy-env "GPTEL_API_KEY")
+    ))
 
 (use-package! org-download
-    :demand t
-    :after org
-    :config
-    (add-hook 'dired-mode-hook 'org-download-enable)
-    ;; (setq org-download-screenshot-method "powershell -c Add-Type -AssemblyName System.Windows.Forms;$image = [Windows.Forms.Clipboard]::GetImage();$image.Save('%s', [System.Drawing.Imaging.ImageFormat]::Png)")
-    ;; (defun org-download-annotate-default (link)
-    ;;   "Annotate LINK with the time of download."
-    ;;   (make-string 0 ?\s))
-
-    ;; (setq-default org-download-heading-lvl nil
-    ;;               org-download-image-dir "./img"
-    ;;               ;; org-download-screenshot-method "screencapture -i %s"
-    ;;               org-download-screenshot-file (expand-file-name "screenshot.jpg" temporary-file-directory))
-)
+  :after org
+  :custom
+  ;; (org-download-image-dir "~/blog/static/")
+  ;; (org-download-screenshot-method "scrot -s %s")
+  (org-download-method 'attach)
+  ;; (org-download-screenshot-file "~/tmp/screenshot.png")
+  ;; (org-download-heading-lvl 1)
+  )
 
 ;; 终端模拟 vterm
 ;; 使用 M-x vterm 新建一个 terminal
@@ -342,3 +311,38 @@
          ("C-<" . mc/mark-previous-like-this-symbol) ;; 同样是开启一个多光标流程，但是是「向上找」而不是向下找。
          ("C-M-<" . mc/skip-to-previous-like-this) ;; 跳过当前单词并跳到上一个单词，和上面在同一个流程里。
          ("C-c C->" . mc/mark-all-symbols-like-this))) ;; 直接多选本 buffer 所有这个单词
+
+(use-package! ob-mermaid
+  :after org
+  :config
+  (add-to-list 'org-babel-load-languages '(mermaid . t))
+
+  ;; (setq ob-mermaid-cli-path "/usr/local/bin/mmdc")
+  ;; (setq ob-mermaid-cli-args '("-i" "%input" "-o" "%output"))
+  )
+
+(use-package! gptel
+  :ensure t
+  :config
+  (setq! gptel-api-key (getenv "GPTEL_API_KEY"))
+  (setq gptel-model "moonshot-v1-8k")
+  (setq gptel-default-mode 'org-mode)
+  (setq gptel-backend
+        (gptel-make-openai "Moonshot"
+          :key 'gptel-api-key
+          :models '("moonshot-v1-8k"
+                    "moonshot-v1-32k"
+                    "moonshot-v1-128k")
+          :host "api.moonshot.cn")))
+
+(use-package! dired
+  :config
+  (setq dired-omit-mode -1))
+
+(use-package! leetcode
+  :config
+  (add-hook 'leetcode-solution-mode-hook
+          (lambda() (flycheck-mode -1))))
+
+(add-to-list 'load-path "~/")
+(require 'test)
