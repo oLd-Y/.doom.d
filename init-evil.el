@@ -42,9 +42,6 @@
     "A" 'evil-mc-make-cursor-in-visual-selection-end
     "I" 'evil-mc-make-cursor-in-visual-selection-beg))
 
-;; 取消 C-g 自动进入 normal-mode, 因为无法取消代码补全提示弹窗. C-[ 已经可以进入 normal-mode 了.
-(after! evil
-  (define-key evil-insert-state-map (kbd "C-g") #'keyboard-quit))
 
 (provide 'init-evil)
 ;;; init-evil.el ends here.
