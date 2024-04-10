@@ -88,7 +88,10 @@
 
 (add-to-list 'load-path "~/")
 (add-to-list 'load-path "~/.doom.d/")
+<<<<<<< HEAD
 
+=======
+>>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
 
 (setq-default tab-width 4) ;; 表示一个 tab 4个字符宽
 (setq-default indent-tabs-mode nil) ;; nil 表示将 tab 替换成空格
@@ -190,6 +193,10 @@
 (after! org
   (setq org-agenda-files '("~/org/agenda.org")))
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
 
 (require 'init-org)
 
@@ -264,7 +271,11 @@
   )
 
 (require 'init-org)
+<<<<<<< HEAD
 ;; (require 'init-evil)
+=======
+(require 'init-evil)
+>>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
 
 ;; emacs gui org-mode 表格中英文混杂时对齐
 (use-package! valign
@@ -294,16 +305,6 @@
   ;; (org-download-heading-lvl 1)
   )
 
-;; ;; 终端模拟 vterm
-;; ;; 使用 M-x vterm 新建一个 terminal
-;; ;; 在 terminal 中使用 C-c C-t 进入「选择」模式（类似 Tmux 里的 C-b [ ）
-;; (use-package! vterm
-;;   ;; https://github.com/akermu/emacs-libvterm
-;;   ;; 比如，如果你要和 shell 双向互动（对，它可以双向互动），
-;;   ;; 那么 shell 需要做一点配置以解析 vterm 传递过来的信号
-;;   :config
-;;   (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-;;   (setq vterm-kill-buffer-on-exit t)) ;; shell 退出时 kill 掉这个 buffer
 (unless (string-equal system-type "windows-nt")
   ;; 在非 Windows 系统中启用 vterm
   (use-package! vterm
@@ -343,6 +344,7 @@
 
 
 
+<<<<<<< HEAD
 ;; 取消 C-g 自动进入 normal-mode, 因为无法取消代码补全提示弹窗. C-[ 已经可以进入 normal-mode 了.
 (after! evil
   (define-key evil-insert-state-map (kbd "C-g") #'keyboard-quit))
@@ -353,3 +355,5 @@
 
 ;; (require 'init-js)
 (require 'init-window)
+=======
+>>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
