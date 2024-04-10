@@ -44,17 +44,6 @@
   ;; (evil-define-key* 'visual evil-mc-key-map
   ;;   "A" 'evil-mc-make-cursor-in-visual-selection-end
   ;;   "I" 'evil-mc-make-cursor-in-visual-selection-beg))
-<<<<<<< HEAD
-=======
-
-  (map! :leader
-      :desc "Evil-mc Hydra"
-      "j" #'hydra-evil-mc/body)
-
-  (map! :map evil-mc-key-map
-      :v "A" #'evil-mc-make-cursor-in-visual-selection-end
-      :v "I" #'evil-mc-make-cursor-in-visual-selection-beg))
->>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
 
   (map! :leader
       :desc "Evil-mc Hydra"

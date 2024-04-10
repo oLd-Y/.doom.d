@@ -88,10 +88,6 @@
 
 (add-to-list 'load-path "~/")
 (add-to-list 'load-path "~/.doom.d/")
-<<<<<<< HEAD
-
-=======
->>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
 
 (setq-default tab-width 4) ;; 表示一个 tab 4个字符宽
 (setq-default indent-tabs-mode nil) ;; nil 表示将 tab 替换成空格
@@ -193,10 +189,6 @@
 (after! org
   (setq org-agenda-files '("~/org/agenda.org")))
 
-<<<<<<< HEAD
-=======
-
->>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
 
 (require 'init-org)
 
@@ -271,11 +263,7 @@
   )
 
 (require 'init-org)
-<<<<<<< HEAD
-;; (require 'init-evil)
-=======
 (require 'init-evil)
->>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
 
 ;; emacs gui org-mode 表格中英文混杂时对齐
 (use-package! valign
@@ -344,16 +332,9 @@
 
 
 
-<<<<<<< HEAD
-;; 取消 C-g 自动进入 normal-mode, 因为无法取消代码补全提示弹窗. C-[ 已经可以进入 normal-mode 了.
-(after! evil
-  (define-key evil-insert-state-map (kbd "C-g") #'keyboard-quit))
-
 (require 'init-evil)
 
 (require 'init-treesit)
 
 ;; (require 'init-js)
 (require 'init-window)
-=======
->>>>>>> dc5b032aa14975d18e05469beb358a97b8619030
