@@ -269,6 +269,7 @@
 (use-package! valign
   :hook
   (org-mode . valign-mode)
+  (markdown-mode . valign-mode)
   :config
   (setq valign-fancy-bar t))
 

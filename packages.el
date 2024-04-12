@@ -116,3 +116,5 @@
     :recipe (:host github :repo "8uff3r/vue-ts-mode"))
 
 (package! treesit-auto)
+
+(package! vue-mode)
